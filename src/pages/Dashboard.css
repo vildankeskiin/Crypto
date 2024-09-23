@@ -1,23 +1,23 @@
-/* Genel Stil Ayarları */
+
 body {
     background: linear-gradient(to right, #141e30, #243b55);
     justify-content: center;
     align-items: flex-start;
     height: 100vh;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    padding-top: 60px; /* Navbar'ın içeriği örtmesini önlemek için */
+    overflow-x: hidden; 
+    padding-top: 60px; 
 }
 
 .container {
     margin: 60px auto;
-    max-width: 1400px; /* Prevent table from overflowing */
+    max-width: 1400px; 
     padding: 30px;
     border-radius: 20px;
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    table-layout: auto; /* Ensure automatic column width adjustment */
-    overflow-x: auto; /* Make container scrollable on overflow */
+    table-layout: auto; 
+    overflow-x: auto; 
 }
 
 .header-title {
@@ -111,7 +111,7 @@ body {
     background-color: #007bff;
 }
 
-/* Grid Görünümü */
+
 .crypto-grid {
     display: flex;
     flex-wrap: wrap;
@@ -123,7 +123,7 @@ body {
     border-radius: 8px;
     padding: 20px;
     width: 100%;
-    max-width: calc(33.333% - 20px); /* 3 sütun için genişlik */
+    max-width: calc(33.333% - 20px); 
     box-sizing: border-box;
     text-align: center;
     transition: background-color 0.3s ease;
@@ -139,21 +139,21 @@ body {
 
 @media (max-width: 768px) {
     .crypto-item {
-        max-width: calc(50% - 20px); /* 2 sütun için genişlik */
+        max-width: calc(50% - 20px);
     }
 }
 
 @media (max-width: 480px) {
     .crypto-item {
-        max-width: 100%; /* Tek sütun için genişlik */
+        max-width: 100%; 
     }
 }
 
-/* Yıldız İkonları */
+
 .bi-star {
-    color: #f0f0f0; /* Boş yıldız rengi */
+    color: #f0f0f0;
 }
 
 .bi-star-fill {
-    color: #ffc107; /* Dolu yıldız rengi (sarı) */
+    color: #ffc107; 
 }
