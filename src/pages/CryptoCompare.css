@@ -1,0 +1,40 @@
+.compare-container {
+    padding: 20px;
+  }
+  
+  .dropdowns {
+    margin-bottom: 30px;
+  }
+  
+  .table-container {
+    margin-top: 20px;
+  }
+  
+  .table-custom {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-custom th, .table-custom td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .table-custom th {
+    background-color: #f2f2f2;
+    color: black;
+  }
+  
+  .chart-section {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    margin-bottom: 600px;
+  }
+  
+  .crypto-chart {
+    width: 45%; /* İki grafiğin yan yana gelmesi için genişlik ayarlaması */
+    height: 300px;
+  }
+  

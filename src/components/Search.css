@@ -1,0 +1,11 @@
+/* In your CSS file or a <style> block */
+.search-form {
+    display: flex;
+    align-items: center;
+    padding-right: 15px; /* Ensure there is no padding on the right */
+}
+
+.search-form .form-control {
+    flex: 1; /* Ensure the input field takes up remaining space */
+}
+

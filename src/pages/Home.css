@@ -1,115 +1,33 @@
-body {
-    background: linear-gradient(to right, #141e30, #243b55);
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
-    padding-top: 60px; /* To prevent the navbar from overlapping the content */
-}
-
-.container {
-    width: 70%;
-    margin-top: 60px;
-    margin-bottom: 60px;
-    max-width: 1400px; /* Increased max-width for better spacing */
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.header-title {
-    color: #fff;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.table-custom {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 12px;
-    
-}
-
-.table-custom th,
-.table-custom td {
-    padding: 12px 20px;
-    text-align: left;
-    color: #fff;
-}
-
-.table-custom th {
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    text-align: center;
-}
-
-.table-custom td {
-    background-color: rgba(255, 255, 255, 0.1);
-    text-align: center;
-}
-
-.table-custom tr {
-    transition: background-color 0.3s ease;
-}
-
-.table-custom tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.table-custom .btn-primary {
-    background-color: #141e30;
+.button {
+    padding: 12px 80px;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
     border: none;
-    color: white;
-    padding: 3px 12px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.table-custom .btn-secondary {
-    background-color: #9c1e1e;
-    border: none;
-    color: white;
-    padding: 3px 12px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.table-custom .btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.table-custom .btn-outline-secondary {
-    border-color: #007bff;
-    color: #007bff;
-    padding: 6px 10px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.table-custom .btn-outline-secondary:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-.table-custom td i {
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 1.2rem;
-    color: #f5c518;
-}
-
-.footer {
-    width: 100%;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.1);
+  }
   
-    backdrop-filter: blur(10px);
-    color: white;
-  position: relative;
-    bottom: 0;
-    margin-top: auto;
+  .home-button {
+    background-color: #084586; /* Mavi renk */
+    margin-right: 20px; /* Sağdan boşluk */
+    
+  }
+  
+  .home-button:hover {
+    background-color: #0963c5; /* Daha koyu mavi renk */
+    transform: translateY(-2px);
+  }
+  
+  .about-button {
+    background-color: #000000; /* Yeşil renk */
+    margin-left: 20px; /* Sağdan boşluk */
+  }
+  
+  .about-button:hover {
+    background-color: #212622; /* Daha koyu yeşil renk */
+    transform: translateY(-2px);
   }
   

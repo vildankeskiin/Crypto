@@ -1,32 +1,65 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-
-
-interface Crypto {
-  symbol: string;
-  price: string;
-}
+import { CryptoData } from '../models/Crypto';
 
 const Favorites: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [cryptoData, setCryptoData] = useState<Crypto[]>([]);
+  const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
+    // Retrieve favorite data from local storage
     const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(storedFavorites);
   }, []);
 
   useEffect(() => {
     if (favorites.length > 0) {
-      axios.get('https://api.binance.com/api/v3/ticker/price')
-        .then((response) => {
-          const data = response.data.filter((crypto: Crypto) => favorites.includes(crypto.symbol));
-          setCryptoData(data);
-        })
-        .catch((error) => {
-          console.error('Error fetching crypto data:', error);
+      const newSocket = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
+      setSocket(newSocket);
+
+      newSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        // Filter data to match favorites
+        const filteredData: CryptoData[] = data
+          .filter((crypto: CryptoData) => favorites.includes(crypto.s)) 
+          .map((crypto: CryptoData) => ({
+            ...crypto,
+          }));
+
+        // Merge with current data and only update favorite cryptos
+        setCryptoData((prevData) => {
+          const updatedData = [...prevData];
+
+          filteredData.forEach((crypto: CryptoData) => {
+            const index = updatedData.findIndex((item) => item.s === crypto.s);
+            if (index !== -1) {
+              updatedData[index] = crypto; // Update existing data
+            } else {
+              updatedData.push(crypto); // Add new data
+            }
+          });
+
+          return updatedData;
         });
+      };
+
+      newSocket.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+      };
+
+      newSocket.onclose = () => {
+        console.log('WebSocket connection closed');
+        setTimeout(() => {
+          const reconnectSocket = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
+          setSocket(reconnectSocket);
+        }, 5000);
+      };
+
+      return () => {
+        newSocket.close();
+      };
     } else {
       setCryptoData([]);
     }
@@ -53,21 +86,23 @@ const Favorites: React.FC = () => {
           </thead>
           <tbody>
             {cryptoData.map((crypto) => (
-              <tr key={crypto.symbol}>
-                <td onClick={() => removeFavorite(crypto.symbol)}>
-                  <i className={`bi ${favorites.includes(crypto.symbol) ? 'bi-star-fill' : 'bi-star'}`}></i>
+              <tr key={crypto.s}>
+                <td onClick={() => removeFavorite(crypto.s)}>
+                  <i className={`bi ${favorites.includes(crypto.s) ? 'bi-star-fill' : 'bi-star'}`}></i>
                 </td>
-                <td>{crypto.symbol}</td>
-                <td>${crypto.price}</td>
+                <td>{crypto.s}</td>
+                <td>${crypto.c}</td>
                 <td>
-                  <Link to={`/cryptoDetails/${crypto.symbol}`} className="btn btn-primary">Details</Link>
+                  <Link to={`/cryptoDetails/${crypto.s}`} className="btn btn-primary">
+                    Details
+                  </Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p className="no-favorites">No favorites added.</p>
+        <p > Loading... </p>
       )}
     </div>
   );

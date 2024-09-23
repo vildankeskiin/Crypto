@@ -1,0 +1,53 @@
+/* Dark theme */
+.dark-theme {
+    background: linear-gradient(to right, #141e30, #243b55);
+    color: aliceblue;
+}
+
+.dark-theme .table-custom th,
+.dark-theme .table-custom td {
+    color: #fff; /* Dark mode için beyaz */
+}
+
+.dark-theme .footer{
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Light theme */
+.light-theme {
+    background: linear-gradient(to right, #ffffff, #f0f0f0);
+    color: #181818;
+}
+
+.light-theme .table-custom th,
+.light-theme .table-custom td {
+    color: #000; /* Light mode için siyah */
+}
+
+.light-theme .footer{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Temaya göre container ve diğer öğeler */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #fcf7f7;
+    background-color: #007bff;
+    border-radius: 4px;
+    padding: 10px 15px;
+    border: none;
+}
+
+.theme-toggle span {
+    margin-left: 10px;
+}

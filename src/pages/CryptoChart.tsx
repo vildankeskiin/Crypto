@@ -38,12 +38,67 @@ interface CryptoChartProps {
 const CryptoChart: React.FC<CryptoChartProps> = ({ symbol }) => {
   const [selectedRange, setSelectedRange] = useState<keyof typeof intervals>('24h');
   const [chartData, setChartData] = useState<any>(null);
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(() => localStorage.getItem('theme') === 'dark');
+  const [chartOptions, setChartOptions] = useState<any>(null);
 
+  // Tema değişikliğini dinlemek için useEffect
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const storedTheme = localStorage.getItem('theme');
+      setIsDarkTheme(storedTheme === 'dark');
+    };
+
+    // Component yüklendiğinde event listener'ı ekle
+    window.addEventListener('themeChange', handleThemeChange);
+
+    // Cleanup: Component unmount olduğunda event listener'ı kaldır
+    return () => {
+      window.removeEventListener('themeChange', handleThemeChange);
+    };
+  }, []);
+
+  // Tema değiştikçe chartOptions'u güncelle
+  useEffect(() => {
+    setChartOptions({
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: {
+            color: isDarkTheme ? 'white' : 'black',
+          },
+          grid: {
+            color: isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+            borderColor: isDarkTheme ? 'white' : 'black',
+          },
+        },
+        y: {
+          ticks: {
+            color: isDarkTheme ? 'white' : 'black',
+          },
+          grid: {
+            color: isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+            borderColor: isDarkTheme ? 'white' : 'black',
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: isDarkTheme ? 'white' : 'black',
+          },
+        },
+      },
+    });
+  }, [isDarkTheme]); // isDarkTheme değiştiğinde çalışır
+
+  // Grafiğin verisini almak
   useEffect(() => {
     if (!symbol) return;
 
     const { interval, limit } = intervals[selectedRange];
-    axios.get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`)
+    axios
+      .get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`)
       .then((response) => {
         const data = response.data.map((kline: any) => ({
           time: new Date(kline[0]),
@@ -51,9 +106,8 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ symbol }) => {
         }));
 
         const labels = data.map((d: any) => {
-          const dateOptions: Intl.DateTimeFormatOptions = selectedRange === '24h' 
-            ? { hour: '2-digit', minute: '2-digit' }
-            : { month: 'short', day: 'numeric', year: 'numeric' };
+          const dateOptions: Intl.DateTimeFormatOptions =
+            selectedRange === '24h' ? { hour: '2-digit', minute: '2-digit' } : { month: 'short', day: 'numeric', year: 'numeric' };
           return d.time.toLocaleDateString(undefined, dateOptions);
         });
 
@@ -74,38 +128,6 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ symbol }) => {
         console.error('Error fetching chart data:', error);
       });
   }, [symbol, selectedRange]);
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        ticks: {
-          color: 'white', 
-        },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.2)',
-          borderColor: 'white',
-        },
-      },
-      y: {
-        ticks: {
-          color: 'white', 
-        },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.2)', 
-          borderColor: 'white',
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: 'white', 
-        },
-      },
-    },
-  };
 
   return (
     <div>
@@ -136,7 +158,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ symbol }) => {
         </Button>
       </div>
       <div className="chart-container">
-        {chartData ? (
+        {chartData && chartOptions ? (
           <Line data={chartData} options={chartOptions} />
         ) : (
           <p className="text-center">Loading chart data...</p>
@@ -147,4 +169,3 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ symbol }) => {
 };
 
 export default CryptoChart;
-

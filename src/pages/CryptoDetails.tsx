@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { CryptoData } from "../models/Crypto";
 import CryptoChart from "./CryptoChart";
@@ -12,8 +11,13 @@ const CryptoDetails: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState<string>(urlSymbol || 'BTCUSDT');
   const [isFavorite, setIsFavorite] = useState(false);
   const [cryptoList, setCryptoList] = useState<string[]>([]);
+  const [filteredCryptoList, setFilteredCryptoList] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
+
+  useEffect(() => {
+    setSelectedSymbol(urlSymbol || 'BTCUSDT');
+  }, [urlSymbol]);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -21,16 +25,37 @@ const CryptoDetails: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchCryptoData = async () => {
-      try {
-        const response = await axios.get<CryptoData>(`https://api.binance.com/api/v3/ticker/24hr?symbol=${selectedSymbol}`);
-        setCryptoData(response.data);
-      } catch (error) {
-        console.error("Error fetching crypto data:", error);
+    const socket = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const crypto = data.find((item: any) => item.s === selectedSymbol);
+      if (crypto) {
+        setCryptoData(crypto);
       }
+
+      // Filter and sort the top 10 highest-volume cryptocurrencies
+      const availableCryptos = data
+        .filter((item: any) => item.s.endsWith("USDT"))
+        .sort((a: any, b: any) => parseFloat(b.v) - parseFloat(a.v)) // Sort by volume
+        .slice(0, 10) // Take the top 10
+        .map((item: any) => item.s);
+      
+      setCryptoList(availableCryptos);
+      setFilteredCryptoList(availableCryptos);
     };
 
-    fetchCryptoData();
+    socket.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      socket.close();
+    };
   }, [selectedSymbol]);
 
   useEffect(() => {
@@ -39,27 +64,20 @@ const CryptoDetails: React.FC = () => {
     setIsFavorite(storedFavorites.includes(selectedSymbol));
   }, [selectedSymbol]);
 
-  useEffect(() => {
-    const fetchTop10Crypto = async () => {
-      try {
-        const response = await axios.get<CryptoData[]>('https://api.binance.com/api/v3/ticker/24hr');
-        const top10Crypto = response.data
-          .filter((crypto) => crypto.symbol.endsWith("USDT"))
-          .sort((a, b) => parseFloat(b.volume) - parseFloat(a.volume))
-          .slice(0, 10)
-          .map(crypto => crypto.symbol);
-        setCryptoList(top10Crypto);
-      } catch (error) {
-        console.error("Error fetching top 10 cryptos:", error);
-      }
-    };
-
-    fetchTop10Crypto();
-  }, []);
-
   const handleSelect = (eventKey: string | null) => {
     if (eventKey) {
       setSelectedSymbol(eventKey);
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    if (query) {
+      const filteredList = cryptoList.filter((symbol) =>
+        symbol.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredCryptoList(filteredList);
+    } else {
+      setFilteredCryptoList(cryptoList);
     }
   };
 
@@ -74,14 +92,13 @@ const CryptoDetails: React.FC = () => {
       setFavorites(updatedFavorites);
       localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     } else {
-      alert('Please log in to add favorites.');
+      alert('Please log in to add to favorites.');
     }
   };
 
   const formatNumber = (num: string) => {
     return parseFloat(num).toString();
   };
-  
 
   return (
     <div className="detail-container">
@@ -93,15 +110,15 @@ const CryptoDetails: React.FC = () => {
                 <tr>
                   <th scope="col">Symbol</th>
                   <th scope="col">Price Change</th>
-                  <th scope="col">Price Change Percent</th>
+                  <th scope="col">Price Change Percentage</th>
                   <th scope="col">Weighted Avg Price</th>
-                  <th scope="col">Prev Close Price</th>
+                  <th scope="col">Previous Close Price</th>
                   <th scope="col">Last Price</th>
-                  <th scope="col">Last Qty</th>
+                  <th scope="col">Last Quantity</th>
                   <th scope="col">Bid Price</th>
-                  <th scope="col">Bid Qty</th>
+                  <th scope="col">Bid Quantity</th>
                   <th scope="col">Ask Price</th>
-                  <th scope="col">Ask Qty</th>
+                  <th scope="col">Ask Quantity</th>
                   <th scope="col">Open Price</th>
                   <th scope="col">High Price</th>
                   <th scope="col">Low Price</th>
@@ -118,8 +135,8 @@ const CryptoDetails: React.FC = () => {
                             {selectedSymbol}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Search />
-                            {cryptoList.map((symbol) => (
+                            <Search onSearch={handleSearch} />
+                            {filteredCryptoList.map((symbol) => (
                               <Dropdown.Item key={symbol} eventKey={symbol}>
                                 {symbol}
                               </Dropdown.Item>
@@ -129,20 +146,20 @@ const CryptoDetails: React.FC = () => {
                       </div>
                     </div>
                   </td>
-                  <td>{formatNumber(cryptoData.priceChange)}</td>
-                  <td>{formatNumber(cryptoData.priceChangePercent)}</td>
-                  <td>{formatNumber(cryptoData.weightedAvgPrice)}</td>
-                  <td>{formatNumber(cryptoData.prevClosePrice)}</td>
-                  <td>{formatNumber(cryptoData.lastPrice)}</td>
-                  <td>{formatNumber(cryptoData.lastQty)}</td>
-                  <td>{formatNumber(cryptoData.bidPrice)}</td>
-                  <td>{formatNumber(cryptoData.bidQty)}</td>
-                  <td>{formatNumber(cryptoData.askPrice)}</td>
-                  <td>{formatNumber(cryptoData.askQty)}</td>
-                  <td>{formatNumber(cryptoData.openPrice)}</td>
-                  <td>{formatNumber(cryptoData.highPrice)}</td>
-                  <td>{formatNumber(cryptoData.lowPrice)}</td>
-                  <td>{formatNumber(cryptoData.volume)}</td>
+                  <td>{formatNumber(cryptoData.p)}</td>
+                  <td>{formatNumber(cryptoData.P)}</td>
+                  <td>{formatNumber(cryptoData.w)}</td>
+                  <td>{formatNumber(cryptoData.x)}</td>
+                  <td>{formatNumber(cryptoData.c)}</td>
+                  <td>{formatNumber(cryptoData.Q)}</td>
+                  <td>{formatNumber(cryptoData.b)}</td>
+                  <td>{formatNumber(cryptoData.B)}</td>
+                  <td>{formatNumber(cryptoData.a)}</td>
+                  <td>{formatNumber(cryptoData.A)}</td>
+                  <td>{formatNumber(cryptoData.o)}</td>
+                  <td>{formatNumber(cryptoData.h)}</td>
+                  <td>{formatNumber(cryptoData.l)}</td>
+                  <td>{formatNumber(cryptoData.v)}</td>
                 </tr>
               </tbody>
             </table>

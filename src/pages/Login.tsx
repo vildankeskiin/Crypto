@@ -21,7 +21,10 @@ const Login: React.FC = () => {
 
   const onSubmit = (values: { email: string; password: string; }) => {
     const registeredUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = registeredUsers.find((user: { email: string; password: string; }) => user.email === values.email && user.password === values.password);
+    const user = registeredUsers.find((
+        user: { email: string; password: string; }) => 
+        user.email === values.email &&
+        user.password === values.password);
 
     if (!user) {
       setLoginError('Invalid email or password');
