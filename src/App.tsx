@@ -10,6 +10,8 @@ import About from './pages/About';
 import Compare from './pages/CryptoCompare';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
+import NewsPage from './pages/NewsPage';
+
 
 
 const App: React.FC = () => {
@@ -26,7 +28,12 @@ const App: React.FC = () => {
                     <Route path="/favorites" element={<Favorites />} />
                     <Route path="/cryptoDetails/:symbol" element={<CryptoDetails />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/compare" element={<Compare />} />
+                    <Route path="/compare" element={<Compare />} />,                    
+                    <Route path="/news" element={<NewsPage />} />
+                   
+
+
+
                 </Routes> 
           
                 

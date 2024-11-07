@@ -1,0 +1,74 @@
+/* News container styling */
+.news-container {
+    padding: 20px;
+    max-width: 1200px; /* Daha geniş bir konteyner */
+    margin: 0 auto;
+    display: flex; /* Flexbox kullanımı */
+    flex-wrap: wrap; /* Satır başına birden fazla kart için sarma */
+    justify-content: space-between; /* Kartlar arasında eşit boşluk bırakma */
+}
+
+/* Main title styling */
+.news-container h1 {
+    text-align: center; /* Başlığı ortala */
+    width: 100%; /* Başlığın tüm genişliği kaplaması için */
+    margin-bottom: 20px; /* Başlık altındaki boşluk */
+    color: #e0e0e0; /* Başlık rengi */
+}
+
+/* News article styling */
+.news-article {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px;
+    flex: 0 1 calc(50% - 30px); /* Her kartın genişliğini ayarlama */
+    position: relative;
+    color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    height: 300px; /* Kart yüksekliği arttırıldı */
+}
+
+/* Title styling */
+.news-article h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #e0e0e0;
+}
+
+/* Date styling (top-left) */
+.news-article p.date {
+    font-size: 0.9rem;
+    color: #888;
+    position: absolute;
+    top: 15px;
+    left: 20px;
+}
+
+/* Content styling */
+.news-article p.content {
+    margin: 10px 0 30px;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Read more link (right-aligned) */
+.news-article a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+}
+
+.news-article a:hover {
+    text-decoration: underline;
+}
+
+/* Adding hover effect for news articles */
+.news-article:hover {
+    background: #2a2a2a;
+    transform: translateY(-5px);
+    transition: 0.3s ease;
+}

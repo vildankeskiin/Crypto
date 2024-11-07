@@ -108,9 +108,12 @@ const Dashboard: React.FC = () => {
 
  
     const getLogo = (symbol: string) => {
-        return logos[symbol] || coinImage; // Default logo if none found
+        return logos[symbol] || coinImage; 
     };
 
+
+
+    
     // Function to determine the color based on price change
     const getPriceChangeClass = (priceChange: string) => {
         const changeValue = parseFloat(priceChange);

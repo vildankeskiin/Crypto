@@ -57,8 +57,9 @@ const CustomNavbar: React.FC = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+                        <Nav.Link as={Link} to="/cryptoDetails/BTCUSDT">Crypto Details</Nav.Link>
                         <Nav.Link as={Link} to="/compare">Compare</Nav.Link>
-                        <Nav.Link as={Link} to="/cryptoDetails/BTCUSDT">CryptoDetails</Nav.Link>
+                        <Nav.Link as={Link} to="/news">News</Nav.Link>
                         <Nav.Link as="button" onClick={handleFavoritesClick}>Favorites</Nav.Link>
                     </Nav>
 
